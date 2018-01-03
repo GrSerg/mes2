@@ -60,69 +60,72 @@ class Handler:
         return messages
 
     @log
-    def write_responses(self, messages, w_clients, all_clients):
-        """
-        Отправка сообщений тем клиентам, которые их ждут
-        :param messages: список сообщений
-        :param w_clients: клиенты которые читают
-        :param all_clients: все клиенты
-        :return:
-        """
+    def write_responses(self, messages, names, all_clients):
+        """Отправляем сообщения либо конкретному пользователю, либо тому, кто ждет ответа"""
 
-        for sock in w_clients:
-            # Будем отправлять каждое сообщение всем
-            for message in messages:
-                try:
-                    # теперь нам приходят разные сообщения, будем их обрабатывать
-                    action = Jim.from_dict(message)
-                    if action.action == GET_CONTACTS:
-                        # нам нужен репозиторий
-                        contacts = self.repo.get_contacts(action.account_name)
-                        # формируем ответ
-                        response = JimResponse(ACCEPTED, quantity=len(contacts))
+        for message, sock in messages:
+            try:
+                # теперь нам приходят разные сообщения, будем их обрабатывать
+                action = Jim.from_dict(message)
+                if action.action == GET_CONTACTS:
+                    # нам нужен репозиторий
+                    contacts = self.repo.get_contacts(action.account_name)
+                    # формируем ответ
+                    response = JimResponse(ACCEPTED, quantity=len(contacts))
+                    # Отправляем
+                    send_message(sock, response.to_dict())
+                    # в цикле по контактам шлем сообщения
+                    # отправляли в цикле и на клиенте иногда ловили ошибки
+                    # for contact in contacts:
+                    #     message = JimContactList(contact.Name)
+                    #     print(message.to_dict())
+                    #     send_message(sock, message.to_dict())
+                    # отправляем одним списком
+                    contact_names = [contact.Name for contact in contacts]
+                    message = JimContactList(contact_names)
+                    send_message(sock, message.to_dict())
+                elif action.action == ADD_CONTACT:
+                    user_id = action.user_id
+                    username = action.account_name
+                    try:
+                        self.repo.add_contact(username, user_id)
+                        # шлем удачный ответ
+                        response = JimResponse(ACCEPTED)
                         # Отправляем
                         send_message(sock, response.to_dict())
-                        # в цикле по контактам шлем сообщения
-                        for contact in contacts:
-                            message = JimContactList(contact.Name)
-                            print(message.to_dict())
-                            send_message(sock, message.to_dict())
-                    elif action.action == ADD_CONTACT:
-                        user_id = action.user_id
-                        username = action.account_name
-                        try:
-                            self.repo.add_contact(username, user_id)
-                            # шлем удачный ответ
-                            response = JimResponse(ACCEPTED)
-                            # Отправляем
-                            send_message(sock, response.to_dict())
-                        except ContactDoesNotExist as e:
-                            # формируем ошибку, такого контакта нет
-                            response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')
-                            # Отправляем
-                            send_message(sock, response.to_dict())
-                    elif action.action == DEL_CONTACT:
-                        user_id = action.user_id
-                        username = action.account_name
-                        try:
-                            self.repo.del_contact(username, user_id)
-                            # шлем удачный ответ
-                            response = JimResponse(ACCEPTED)
-                            # Отправляем
-                            send_message(sock, response.to_dict())
-                        except ContactDoesNotExist as e:
-                            # формируем ошибку, такого контакта нет
-                            response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')
-                            # Отправляем
-                            send_message(sock, response.to_dict())
-                except WrongInputError as e:
-                    # Отправляем ошибку и текст из ошибки
-                    response = JimResponse(WRONG_REQUEST, error=str(e))
-                    send_message(sock, response.to_dict())
-                except:  # Сокет недоступен, клиент отключился
-                    print('Клиент {} {} отключился'.format(sock.fileno(), sock.getpeername()))
-                    sock.close()
-                    all_clients.remove(sock)
+                    except ContactDoesNotExist as e:
+                        # формируем ошибку, такого контакта нет
+                        response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')
+                        # Отправляем
+                        send_message(sock, response.to_dict())
+                elif action.action == DEL_CONTACT:
+                    user_id = action.user_id
+                    username = action.account_name
+                    try:
+                        self.repo.del_contact(username, user_id)
+                        # шлем удачный ответ
+                        response = JimResponse(ACCEPTED)
+                        # Отправляем
+                        send_message(sock, response.to_dict())
+                    except ContactDoesNotExist as e:
+                        # формируем ошибку, такого контакта нет
+                        response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')                            # Отправляем
+                        send_message(sock, response.to_dict())
+                elif action.action == MSG:
+                    # получаем кому нужно отправить сообщение
+                    to = action.to
+                    # находим сокет этого клиента
+                    client_sock = names[to]
+                    # просто пересылаем туда сообщение
+                    send_message(client_sock, action.to_dict())
+            except WrongInputError as e:
+                # Отправляем ошибку и текст из ошибки
+                response = JimResponse(WRONG_REQUEST, error=str(e))
+                send_message(sock, response.to_dict())
+            except:  # Сокет недоступен, клиент отключился
+                print('Клиент {} {} отключился'.format(sock.fileno(), sock.getpeername()))
+                sock.close()
+                all_clients.remove(sock)
 
     @log
     def presence_response(self, presence_message):
@@ -138,18 +141,21 @@ class Handler:
             # сохраняем пользователя в базу если его там еще нет
             if not self.repo.client_exists(username):
                 self.repo.add_client(username)
+            # нам нужно связать имя пользователя и сокет
+
         except Exception as e:
             # Шлем код ошибки
             response = JimResponse(WRONG_REQUEST, error=str(e))
-            return response.to_dict()
+            return response.to_dict(), None
         else:
             # Если всё хорошо шлем ОК
             response = JimResponse(OK)
-            return response.to_dict()
+            # возвращаем еще имя пользователя
+            return response.to_dict(), username
 
 
 class Server:
-    """Клесс сервер"""
+    """Класс сервер"""
 
     def __init__(self, handler):
         """
@@ -158,6 +164,8 @@ class Server:
         self.handler = handler
         # список клиентов
         self.clients = []
+        # тут будут имена клиентов и их сокеты
+        self.names = {}
         # сокет
         self.sock = socket(AF_INET, SOCK_STREAM)  # Создает сокет TCP
 
@@ -166,7 +174,7 @@ class Server:
         self.sock.bind((addr, port))
 
     def listen_forever(self):
-        # запускаем цикл обработки событиц много клиентов
+        # запускаем цикл обработки событий много клиентов
         self.sock.listen(15)
         self.sock.settimeout(0.2)
 
@@ -176,7 +184,7 @@ class Server:
                 # получаем сообщение от клиента
                 presence = get_message(conn)
                 # формируем ответ
-                response = self.handler.presence_response(presence)
+                response, client_name = self.handler.presence_response(presence)
                 # отправляем ответ клиенту
                 send_message(conn, response)
             except OSError as e:
@@ -185,6 +193,10 @@ class Server:
                 print("Получен запрос на соединение от %s" % str(addr))
                 # Добавляем клиента в список
                 self.clients.append(conn)
+                # нам нужно связать имя клиента иего сокет
+                self.names[client_name] = conn
+                # проверим кто к нам подключился
+                print('К нам подключился {}'.format(client_name))
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 0

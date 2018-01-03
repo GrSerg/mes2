@@ -49,7 +49,7 @@ class JimMessage(BaseJimMessage):
 
 class JimResponse(BaseJimMessage):
     def __init__(self, **kwargs):
-        """Реализуем проверки для отевта сервера"""
+        """Реализуем проверки для ответа сервера"""
         if RESPONSE not in kwargs:
             raise MandatoryKeyError(RESPONSE)
         code = kwargs[RESPONSE]

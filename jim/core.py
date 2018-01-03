@@ -200,7 +200,7 @@ class ResponseField:
         self.name = '_' + name
 
     def __set__(self, instance, value):
-        # если значение кода не входит в список доступных котов
+        # если значение кода не входит в список доступных кодов
         if value not in RESPONSE_CODES:
             # вызываем ошибку
             raise ResponseCodeError(value)

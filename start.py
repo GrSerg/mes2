@@ -17,18 +17,20 @@ while True:
         print('Сервер запущен')
         # ждем на всякий пожарный
         time.sleep(1)
-        # запускаем клиентов на чтение
-        for  _ in range(3):
-            # Запускаем клиентский скрипт и добавляем его в список процессов
-            p_list.append(Popen('python client.py localhost 7777 r',
+        # запускаем консольного клиента
+
+        # Запускаем клиентский скрипт и добавляем его в список процессов
+        for i in range(2):
+            p_list.append(Popen('python client_console.py localhost 7777 console{}'.format(i),
                                  creationflags=CREATE_NEW_CONSOLE))
-        print('Клиенты на чтение запущены')
-        # запускаем клиента на запись случайное число
-        for _ in range(2):
-            # Запускаем клиентский скрипт и добавляем его в список процессов
-            p_list.append(Popen('python client.py localhost 7777 w',
+        print('Консольне клиенты запущены')
+
+        for i in range(2):
+            # Запускаем клиентов с графическим интерфейсом
+            p_list.append(Popen('python client_gui.py localhost 7777 Gui{}'.format(i),
                                 creationflags=CREATE_NEW_CONSOLE))
-        print('Клиенты на запись запущены')
+
+        print('GUI клиенты запущены')
     elif user == 'q':
         print('Открыто процессов {}'.format(len(p_list)))
         for p in p_list:
