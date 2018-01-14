@@ -130,7 +130,7 @@ class JimDelContact(JimAction):
 
 
 class JimContactList(JimAction):
-    user_id = MaxLengthField('user_id', USERNAME_MAX_LENGTH)
+    #user_id = MaxLengthField('user_id', USERNAME_MAX_LENGTH)
 
     def __init__(self, user_id, time=None):
         self.user_id = user_id
@@ -200,7 +200,7 @@ class ResponseField:
         self.name = '_' + name
 
     def __set__(self, instance, value):
-        # если значение кода не входит в список доступных кодов
+        # если значение кода не входит в список доступных котов
         if value not in RESPONSE_CODES:
             # вызываем ошибку
             raise ResponseCodeError(value)

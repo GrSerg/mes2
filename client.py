@@ -32,16 +32,16 @@ class User:
         self.request_queue = Queue()
 
     def connect(self):
-        # соединиться с сервером
+        # Соединиться с сервером
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.connect((self.addr, self.port))
-        # создаем сообщение
-        presense = self.create_presense()
-        # отсылаем сообщение
-        send_message(self.sock, presense)
-        # получаем ответ
+        # Создаем сообщение
+        presence = self.create_presence()
+        # Отсылаем сообщение
+        send_message(self.sock, presence)
+        # Получаем ответ
         response = get_message(self.sock)
-        # проверяем ответ
+        # Проверяем ответ
         response = self.translate_response(response)
         return response
 
@@ -49,14 +49,14 @@ class User:
         self.sock.close()
 
     @log
-    def create_presense(self):
+    def create_presence(self):
         """
-        Сформировать presense сообщение
+        Сформировать ​​presence-сообщение
         :return: Словарь сообщения
         """
-        # формулируем сообщение
-        jim_presense = JimPresence(self.login)
-        message = jim_presense.to_dict()
+        # формируем сообщение
+        jim_presence = JimPresence(self.login)
+        message = jim_presence.to_dict()
         # возвращаем
         return message
 
@@ -65,7 +65,7 @@ class User:
         """
         Разбор сообщения
         :param response: Словарь ответа от сервера
-        :return: Корректный словарь ответа
+        :return: корректный словарь ответа
         """
         result = Jim.from_dict(response)
         # возвращаем ответ
@@ -76,23 +76,23 @@ class User:
         return message.to_dict()
 
     def get_contacts(self):
-        # запрос на список клиентов
+        # запрос на список контактов
         jimmessage = JimGetContacts(self.login)
-
         # отправляем
+
         send_message(self.sock, jimmessage.to_dict())
         # получаем ответ
         # response = get_message(self.sock)
-        # получаем ответ из очереди
+        # ответ получаем из очереди
         response = self.request_queue.get()
         # приводим ответ к ответу сервера
-        # response = Jim.from_dict(response)
+        #response = Jim.from_dict(response)
         # там лежит количество контактов
         quantity = response.quantity
         # делаем цикл и получаем каждый контакт по отдельности
-        # print('У вас', quantity, 'друзей')
+        # print('У вас ', quantity, 'друзей')
         # print('Вот они:')
-        # получали в цикле и ловили ошибкт иногда
+        # получали в цикле и ловили ошибки иногда
         # for i in range(quantity):
         #     message = get_message(service)
         #     message = Jim.from_dict(message)
@@ -111,7 +111,6 @@ class User:
         send_message(self.sock, message.to_dict())
         # получаем ответ от сервера
         # response = get_message(self.sock)
-        # response = Jim.from_dict(response)
         # получаем ответ из очереди
         response = self.request_queue.get()
         return response
@@ -121,8 +120,7 @@ class User:
         message = JimDelContact(self.login, username)
         send_message(self.sock, message.to_dict())
         # получаем ответ от сервера
-        # response = get_message(self.sock)
-        # response = Jim.from_dict(response)
+        #response = get_message(self.sock)
         # получаем ответ из очереди
         response = self.request_queue.get()
         return response
@@ -133,36 +131,36 @@ class User:
         # отправляем
         send_message(self.sock, message.to_dict())
 
-#     def write_messages(self):
-#         """Клиент пишет сообщение в бесконечном цикле"""
-#         while True:
-#             # Вводим сообщение с клавиатуры
-#             text = input(':)>')
-#             if text.startswith('list'):
-#                 message = self.get_contacts()
-#                 for name in message:
-#                     print(name)
-#             else:
-#                 command, param = text.split()
-#                 if command == 'add':
-#                     response = self.add_contact(param)
-#                     if response.response == ACCEPTED:
-#                         print('Контакт успешно добавлен')
-#                     else:
-#                         print(response.error)
-#                 elif command == 'del':
-#                     response = self.del_contact(param)
-#                     if response.response == ACCEPTED:
-#                         print('Контакт успешно удален')
-#                     else:
-#                         print(response.error)
-#
-#                         # # Создаем jim сообщение
-#                         # message = self.create_message('#all', text)
-#                         # # отправляем на сервер
-#                         # send_message(service, message)
-#
-#
+    # def write_messages(self):
+    #     """Клиент пишет сообщение в бесконечном цикле"""
+    #     while True:
+    #         # Вводим сообщение с клавиатуры
+    #         text = input(':)>')
+    #         if text.startswith('list'):
+    #             message = self.get_contacts()
+    #             for name in message:
+    #                 print(name)
+    #         else:
+    #             command, param = text.split()
+    #             if command == 'add':
+    #                 response = self.add_contact(param)
+    #                 if response.response == ACCEPTED:
+    #                     print('Контакт успешно добавлен')
+    #                 else:
+    #                     print(response.error)
+    #             elif command == 'del':
+    #                 response = self.del_contact(param)
+    #                 if response.response == ACCEPTED:
+    #                     print('Контакт успешно удален')
+    #                 else:
+    #                     print(response.error)
+
+                        # # Создаем jim сообщение
+                        # message = self.create_message('#all', text)
+                        # # отправляем на сервер
+                        # send_message(service, message)
+
+
 # if __name__ == '__main__':
 #     client = User('Leo')
 #     client.connect()

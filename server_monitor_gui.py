@@ -13,7 +13,7 @@ repo = Repo(session)
 
 
 def load_clients():
-    """загрузка клиентов в QListWidget"""
+    """загрузка клиентов в QListWinget"""
     # получаем всех клиентов
     clients = repo.get_clients()
     # чистим список
@@ -42,7 +42,7 @@ def refresh():
 # Сразу все грузим при запуске скрипта
 refresh()
 
-# Связываем меню сигнал triggered - нажатие и слот функцию reresh
+# Связываем меню сигнал triggered - нажатие и слот функцию refresh
 window.actionrefresh.triggered.connect(refresh)
 
 # рисуем окно

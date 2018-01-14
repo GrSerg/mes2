@@ -1,5 +1,3 @@
-# from jim.protocol import JimMessage, JimResponse
-# from jim.errors import MandatoryKeyError
 from jim.config import MESSAGE
 from PyQt5.QtCore import QObject, pyqtSignal
 from jim.utils import get_message
@@ -87,4 +85,3 @@ class GuiReciever(Receiver, QObject):
         super().poll()
         # Когда обработка событий закончиться сообщаем об этом генерируем сигнал finished
         self.finished.emit(0)
-

@@ -33,7 +33,6 @@ class Handler:
         # сохраняем репозиторий
         self.repo = Repo(session)
 
-
     def read_requests(self, r_clients, all_clients):
         """
         Чтение сообщений, которые будут посылать клиенты
@@ -51,7 +50,8 @@ class Handler:
                 # Добавляем их в список
                 # В идеале нам нужно сделать еще проверку, что сообщение нужного формата прежде чем его пересылать!
                 # Пока оставим как есть, этим займемся позже
-                messages.append(message)
+                # Домавляем пару: сообщение и сокет который его отправил
+                messages.append((message, sock))
             except:
                 print('Клиент {} {} отключился'.format(sock.fileno(), sock.getpeername()))
                 all_clients.remove(sock)
@@ -62,6 +62,7 @@ class Handler:
     @log
     def write_responses(self, messages, names, all_clients):
         """Отправляем сообщения либо конкретному пользователю, либо тому, кто ждет ответа"""
+
 
         for message, sock in messages:
             try:
@@ -75,7 +76,7 @@ class Handler:
                     # Отправляем
                     send_message(sock, response.to_dict())
                     # в цикле по контактам шлем сообщения
-                    # отправляли в цикле и на клиенте иногда ловили ошибки
+                    # отправляли в цикли и на клиенте иногда ловили ошибки
                     # for contact in contacts:
                     #     message = JimContactList(contact.Name)
                     #     print(message.to_dict())
@@ -109,10 +110,11 @@ class Handler:
                         send_message(sock, response.to_dict())
                     except ContactDoesNotExist as e:
                         # формируем ошибку, такого контакта нет
-                        response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')                 # Отправляем
+                        response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')
+                        # Отправляем
                         send_message(sock, response.to_dict())
                 elif action.action == MSG:
-                    # получаем кому нужно отправить сообщение
+                    # получаем кому надо отправить сообщение
                     to = action.to
                     # находим сокет этого клиента
                     client_sock = names[to]
@@ -141,7 +143,7 @@ class Handler:
             # сохраняем пользователя в базу если его там еще нет
             if not self.repo.client_exists(username):
                 self.repo.add_client(username)
-            # нам нужно связать имя пользователя и сокет
+            # нам надо связать имя пользователя и сокет
 
         except Exception as e:
             # Шлем код ошибки
@@ -155,7 +157,7 @@ class Handler:
 
 
 class Server:
-    """Класс сервер"""
+    """Клесс сервер"""
 
     def __init__(self, handler):
         """
@@ -174,7 +176,7 @@ class Server:
         self.sock.bind((addr, port))
 
     def listen_forever(self):
-        # запускаем цикл обработки событий много клиентов
+        # запускаем цикл обработки событиц много клиентов
         self.sock.listen(15)
         self.sock.settimeout(0.2)
 
@@ -193,7 +195,7 @@ class Server:
                 print("Получен запрос на соединение от %s" % str(addr))
                 # Добавляем клиента в список
                 self.clients.append(conn)
-                # нам нужно связать имя клиента иего сокет
+                # нам надо связать имя клиента и его сокет
                 self.names[client_name] = conn
                 # проверим кто к нам подключился
                 print('К нам подключился {}'.format(client_name))
@@ -208,7 +210,7 @@ class Server:
                     pass  # Ничего не делать, если какой-то клиент отключился
 
                 requests = self.handler.read_requests(r, self.clients)  # Получаем входные сообщения
-                self.handler.write_responses(requests, w, self.clients)  # Выполним отправку входящих сообщений
+                self.handler.write_responses(requests, self.names, self.clients)  # Выполним отправку входящих сообщений
 
 
 if __name__ == '__main__':

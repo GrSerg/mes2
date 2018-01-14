@@ -11,7 +11,7 @@ def dict_to_bytes(message_dict):
     :return: bytes
     """
     # Проверям, что пришел словарь
-    if isinstance(message_dict, dict):
+    if isinstance(message_dict, dict) or isinstance(message_dict, list):
         # Преобразуем словарь в json
         jmessage = json.dumps(message_dict)
         # Переводим json в байты
@@ -29,13 +29,14 @@ def bytes_to_dict(message_bytes):
     :return: словарь сообщения
     """
     # Если переданы байты
+    #print('Пришли байты', message_bytes)
     if isinstance(message_bytes, bytes):
         # Декодируем
         jmessage = message_bytes.decode(ENCODING)
         # Из json делаем словарь
         message = json.loads(jmessage)
         # Если там был словарь
-        if isinstance(message, dict):
+        if isinstance(message, dict) or isinstance(message, list):
             # Возвращаем сообщение
             return message
         else:
