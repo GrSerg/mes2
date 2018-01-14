@@ -53,6 +53,7 @@ class Repo:
                     ClientContact.ClientId == client.ClientId).filter(
                     ClientContact.ContactId == contact.ClientId).first()
                 self.session.delete(cc)
+                self.session.commit()
             else:
                 # raise NoneClientError(client_username)
                 pass
@@ -70,3 +71,7 @@ class Repo:
                 contact = self.session.query(Client).filter(Client.ClientId == contact_client.ContactId).first()
                 result.append(contact)
         return result
+
+    def get_clients(self):
+        """Получение всех клиентов"""
+        return self.session.query(Client).all()

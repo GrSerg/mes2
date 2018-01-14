@@ -17,16 +17,9 @@ while True:
         print('Сервер запущен')
         # ждем на всякий пожарный
         time.sleep(1)
-        # запускаем консольного клиента
 
-        # Запускаем клиентский скрипт и добавляем его в список процессов
-        for i in range(2):
-            p_list.append(Popen('python client_console.py localhost 7777 console{}'.format(i),
-                                 creationflags=CREATE_NEW_CONSOLE))
-        print('Консольне клиенты запущены')
-
-        for i in range(2):
-            # Запускаем клиентов с графическим интерфейсом
+        # Запускаем клиентов с графическим интерфейсом
+        for i in range(3):
             p_list.append(Popen('python client_gui.py localhost 7777 Gui{}'.format(i),
                                 creationflags=CREATE_NEW_CONSOLE))
 

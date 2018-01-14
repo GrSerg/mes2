@@ -109,7 +109,7 @@ class Handler:
                         send_message(sock, response.to_dict())
                     except ContactDoesNotExist as e:
                         # формируем ошибку, такого контакта нет
-                        response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')                            # Отправляем
+                        response = JimResponse(WRONG_REQUEST, error='Такого контакта нет')                 # Отправляем
                         send_message(sock, response.to_dict())
                 elif action.action == MSG:
                     # получаем кому нужно отправить сообщение
