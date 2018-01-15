@@ -6,24 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>452</width>
-    <height>371</height>
+    <width>626</width>
+    <height>390</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wavy Parrot</string>
+   <string>Mes</string>
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../Downloads/icons8-parrot.png</normaloff>../../../../../Downloads/icons8-parrot.png</iconset>
+    <normaloff>D:/Download_firefox/if_message-circle_2561249.png</normaloff>D:/Download_firefox/if_message-circle_2561249.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>221</width>
+      <x>380</x>
+      <y>280</y>
+      <width>231</width>
       <height>51</height>
      </rect>
     </property>
@@ -35,7 +35,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>121</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -43,7 +43,7 @@
     <widget class="QPushButton" name="pushButtonAddContact">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>150</x>
        <y>10</y>
        <width>31</width>
        <height>31</height>
@@ -54,13 +54,13 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../../../../../Downloads/icons8-plus.png</normaloff>../../../../../Downloads/icons8-plus.png</iconset>
+       <normaloff>D:/Download_firefox/if_Add_user_85174.png</normaloff>D:/Download_firefox/if_Add_user_85174.png</iconset>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonDelContect">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>190</x>
        <y>10</y>
        <width>31</width>
        <height>31</height>
@@ -71,16 +71,16 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../../../../../Downloads/if_f-cross_256_282471.ico</normaloff>../../../../../Downloads/if_f-cross_256_282471.ico</iconset>
+       <normaloff>D:/Download_firefox/if_Delete_user_85184.png</normaloff>D:/Download_firefox/if_Delete_user_85184.png</iconset>
      </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>50</y>
-      <width>221</width>
+      <x>380</x>
+      <y>40</y>
+      <width>231</width>
       <height>231</height>
      </rect>
     </property>
@@ -92,26 +92,16 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>201</width>
+       <width>211</width>
        <height>201</height>
       </rect>
      </property>
     </widget>
    </widget>
-   <widget class="QListWidget" name="listWidgetMessages">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>10</y>
-      <width>211</width>
-      <height>271</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="textEditMessage">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>290</y>
       <width>311</width>
       <height>31</height>
@@ -123,12 +113,65 @@
      <rect>
       <x>340</x>
       <y>290</y>
-      <width>101</width>
+      <width>31</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Send</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>D:/Download_firefox/if_ic_send_48px_352094.png</normaloff>D:/Download_firefox/if_ic_send_48px_352094.png</iconset>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>361</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Чат</string>
+    </property>
+    <widget class="QListWidget" name="listWidgetMessages">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>341</width>
+       <height>201</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Пользователь:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="clientName">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>10</y>
+      <width>171</width>
+      <height>16</height>
+     </rect>
     </property>
    </widget>
   </widget>
@@ -137,12 +180,24 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>452</width>
-     <height>18</height>
+     <width>626</width>
+     <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Меню</string>
+    </property>
+    <addaction name="exit"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="exit">
+   <property name="text">
+    <string>Выйти</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

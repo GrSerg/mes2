@@ -131,37 +131,3 @@ class User:
         # отправляем
         send_message(self.sock, message.to_dict())
 
-    # def write_messages(self):
-    #     """Клиент пишет сообщение в бесконечном цикле"""
-    #     while True:
-    #         # Вводим сообщение с клавиатуры
-    #         text = input(':)>')
-    #         if text.startswith('list'):
-    #             message = self.get_contacts()
-    #             for name in message:
-    #                 print(name)
-    #         else:
-    #             command, param = text.split()
-    #             if command == 'add':
-    #                 response = self.add_contact(param)
-    #                 if response.response == ACCEPTED:
-    #                     print('Контакт успешно добавлен')
-    #                 else:
-    #                     print(response.error)
-    #             elif command == 'del':
-    #                 response = self.del_contact(param)
-    #                 if response.response == ACCEPTED:
-    #                     print('Контакт успешно удален')
-    #                 else:
-    #                     print(response.error)
-
-                        # # Создаем jim сообщение
-                        # message = self.create_message('#all', text)
-                        # # отправляем на сервер
-                        # send_message(service, message)
-
-
-# if __name__ == '__main__':
-#     client = User('Leo')
-#     client.connect()
-#     client.write_messages()

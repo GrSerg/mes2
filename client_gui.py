@@ -24,8 +24,21 @@ except IndexError:
 
 # Создаем приложение
 app = QtWidgets.QApplication(sys.argv)
+
+# Открытие формы входа
+# грузим QDialog чата
+dialog = uic.loadUi('login.ui')
+# привязываем события модального окна (для демонстрации)
+name = dialog.login_input.text()
+dialog.login_submit.clicked.connect(dialog.close)
+# запускаем в модальном режиме
+dialog.show()
+
+
 # грузим главную форму
 window = uic.loadUi('main.ui')
+# прописываем имя пользователя на форме
+window.clientName.setText(name)
 # создаем клиента на запись
 client = User(name, addr, port)
 # получаем список контактов с сервера, которые лежат у нас - не надежные
